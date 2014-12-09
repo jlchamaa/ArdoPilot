@@ -27,7 +27,9 @@ void setup(){
 
 
 
-int wakeArray[20]={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+int wakeArray[10]={1,1,1,1,1,1,1,1,1,1};
+boolean paused=false;
+int vol=9;
 
 void loop()
 {
@@ -36,42 +38,84 @@ void loop()
 		int newin=Serial.read() -'0'; // 
 		digitalWrite(13,HIGH);
 
-		for(int k=0;k<19;k++){ // The for loop index shift
+		for(int k=0;k<9;k++){ // The for loop index shift
 			wakeArray[k]=wakeArray[k+1];
 		}	
-		wakeArray[19] = newin; // add new reading to the array
+		wakeArray[9] = newin; // add new reading to the array
 
 		
 		
 		int count=0;
-		for(int k=0;k<20;k++){ // The for loop index shift
+		for(int k=0;k<10;k++){ // The for loop index shift
 			if(wakeArray[k]==1){
 				count++;
 			}
 		}
-	 
-			if(count>=17) {
-				
-				apply(255,255,255);
-			}
-			else if(count>=10) {
-				
-					int intermediate=255*((count-10)*(count-10))/49;
-					apply(intermediate,intermediate,intermediate);
-					Serial.print("-");
-
-			}
-			else if(count>=5){
-
-			Serial.print(" ");
-			apply(0,0,0);
-			}
-			else{
-				
-				apply(0,0,10);
-			}
-			
 		
+		int intermediate=255*((count-3)*(count-3))/36;
+	 
+		switch(count){
+
+			case 0:
+				apply(0,0,10);
+				break;
+
+			case 1:
+				apply(0,0,10);
+				if(paused==false){
+					Serial.write(" ");
+					paused=true;
+				}
+				break;
+			case 2:
+				apply(0,0,0);
+				if(paused==true){
+					Serial.write(" ");
+					paused=false;
+				}
+				vol=2;
+				break;
+			case 3:
+				apply(0,0,0);
+				if(vol>3) {Serial.write("-");vol=3;}
+				if(vol<3) {Serial.write("u");vol=3;}
+				break;
+
+			case 4:
+				apply(intermediate,intermediate,intermediate);
+				if(vol>4) {Serial.write("-");vol=4;}
+				if(vol<4) {Serial.write("u");vol=4;}
+				break;
+			case 5:
+				apply(intermediate,intermediate,intermediate);
+				if(vol>5) {Serial.write("-");vol=5;}
+				if(vol<5) {Serial.write("u");vol=5;}
+				break;
+			case 6:
+				apply(intermediate,intermediate,intermediate);
+				if(vol>6) {Serial.write("-");vol=6;}
+				if(vol<6) {Serial.write("u");vol=6;}
+				break;
+			case 7:
+				apply(intermediate,intermediate,intermediate);
+				if(vol>7) {Serial.write("-");vol=7;}
+				if(vol<7) {Serial.write("u");vol=7;}
+				break;
+			case 8:
+				apply(intermediate,intermediate,intermediate);
+				if(vol>8) {Serial.write("-");vol=8;}
+				if(vol<8) {Serial.write("u");vol=8;}
+				break;
+			case 9:
+				apply(intermediate,intermediate,intermediate);
+				vol=9;
+				break;
+			case 10:
+				apply(255,255,255);
+				break;
+		}
+
+
 	}
 		
 }

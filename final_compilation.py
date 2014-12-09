@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import serial
 import time
+from keypresser import Keypresser
+k = Keypresser()
 ser = serial.Serial("COM10", 9600, timeout=.25)
 
 
@@ -27,7 +29,7 @@ if __name__=="__main__":
                 
                 for (ex,ey,ew,eh) in eyes:
                     judgement +=1
-                    cv2.rectangle(img,(x+ex,y+ey),(x+ex+ew,y+ey+eh),(255,0,0),2)
+                    cv2.rectangle(img,(-x+ex,y+ey),(x+ex+ew,y+ey+eh),(255,0,0),2)
                 
                     
             cv2.imshow('img', img)
@@ -35,10 +37,16 @@ if __name__=="__main__":
             if c & 0xFF == 27:
                 break
         if judgement > 6:
-            print "your eyes are open"
+            print "your eye`s are open"
             ser.write("1")
+
         else:
             print "your eyes are closed"
             ser.write("0")
+        time.sleep(.05)
+        inward=ser.read()
+        for letter in inward:
+            k.key_press(letter)
     cv2.destroyAllWindows()
+    ser.close()
 
